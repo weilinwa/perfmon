@@ -1243,6 +1243,8 @@ class Model:
                         group += ';tma_L1_group'
                     if 'TmaL2' in group and 'tma_L2_group' not in group:
                         group += ';tma_L2_group'
+                    if 'TmaL1' in group and 'TopdownL1' not in group:
+                        group += ';TopdownL1'
                 _verboseprint3(f'Checking metric {name}: {form}')
                 for v, _ in re.findall(r'(([A-Z_a-z0-9.]|\\-)+)', form):
                     if v.isdigit() or re.match('\d+\.\d+', v) is not None or \
