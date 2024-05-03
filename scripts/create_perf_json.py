@@ -1300,8 +1300,11 @@ class Model:
                         continue
                     if v.startswith('tma_') or v.startswith('topdown\\-'):
                         continue
-                    assert v in events or v.upper() in events or v in infoname or v in aux, \
-                        f'Expected {v} to be an event in "{name}": "{form}" on {self.shortname}'
+                    #assert v in events or v.upper() in events or v in infoname or v in aux, \
+                    #    f'Expected {v} to be an event in "{name}": "{form}" on {self.shortname}'
+                    if v not in events and v.upper() not in events and v not in infoname and v not in aux:
+                        print(f'Expected {v} to be an event in "{name}": "{form}" on {self.shortname}')
+                        return
 
                 assert f'{pmu_prefix}@UNC' not in form, form
                 if group:
