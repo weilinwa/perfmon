@@ -1021,6 +1021,13 @@ class Model:
                     if em['MetricName'] in ignore:
                         _verboseprint2(f"Skipping {em['MetricName']}")
                         continue
+                    form = em['MetricExpr']
+                    if em['MetricName'] == 'tma_info_core_core_clks':
+                        if self.shortname in ['CPX', 'CLX', 'KBLR/CFL/CML', 'SKX', 'SKL/KBL',
+                                'BDX', 'BDW', 'BDW-DE', 'HSX', 'HSW', 'IVT', 'IVB',
+                                'JKT/SNB-EP', 'SNB']:
+                            # Substitute the #EBS mode formula as perf allows thread/process monitoring.
+                            form = "(CPU_CLK_UNHALTED.THREAD / 2 * (1 + CPU_CLK_UNHALTED.ONE_THREAD_ACTIVE / CPU_CLK_UNHALTED.REF_XCLK) if #core_wide < 1 else (CPU_CLK_UNHALTED.THREAD_ANY / 2 if #SMT_on else tma_info_thread_clks))"
                     dups = [m for m in jo if m['MetricName'] == em['MetricName']]
                     if dups:
                         _verboseprint3(f'Not replacing:\n\t{dups[0]["MetricExpr"]}\nwith:\n\t{em["MetricExpr"]}')
@@ -1032,7 +1039,7 @@ class Model:
                             dups[0]['MetricExpr'] = em['MetricExpr']
                             _verboseprint2(f"Replace {dups[0]['MetricName']} formula with formula from JSON\n")
                         continue
-                    self.save_form(em['MetricName'], em['MetricGroup'], em['MetricExpr'],
+                    self.save_form(em['MetricName'], em['MetricGroup'], form,
                               em['BriefDescription'], None, em.get('ScaleUnit'),
                               em.get('MetricThreshold'), [], events, infoname,
                               aux, pmu_prefix, jo, issue_to_metrics, True)
