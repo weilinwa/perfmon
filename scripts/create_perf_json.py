@@ -1016,7 +1016,6 @@ class Model:
                 jo.append(j)
 
     def extract_metric_json(self, events, pmu_prefix, ignore, jo, infoname, aux, issue_to_metrics):
-            print(self.files['extra metrics'])
             with open(self.files['extra metrics'], 'r') as extra_json:
                 broken_metrics = {
                     'ICX': {
@@ -1080,7 +1079,7 @@ class Model:
         }
 
         # For P-Core, we want to use metric json file without loading csv file
-        if not use_csv and pmu_prefix == 'cpu':
+        if not use_csv and pmu_prefix in ['cpu', 'cpu_core']:
             if 'extra metrics' not in self.files:
                 return []
             jout = []
@@ -2042,9 +2041,19 @@ class Mapfile:
                 _verboseprint2(f'Found {cpu_metrics_path}')
                 files[shortname]['extra metrics'] = cpu_metrics_path
             else:
-                _verboseprint2(f'Didn\'t find {cpu_metrics_path}')
-                if shortname in ['BDX', 'CLX', 'HSX', 'ICX', 'SKX', 'SPR', 'EMR']:
-                    raise
+                #TODO: check if this also support multi-atom platforms correctly
+                if 'atom' in files[shortname] and 'core' in files[shortname]:
+                    core_name = Path(files[shortname]['core']).name.split('_')
+                    cpu_metrics_path = Path(base_path, shortname, 'metrics', 'perf',
+                                    f'{longname.lower()}_metrics_{core_name[1].lower()}_core_perf.json')
+                    if cpu_metrics_path.is_file():
+                        _verboseprint2(f'Found {cpu_metrics_path}')
+                        files[shortname]['extra metrics'] = cpu_metrics_path
+                else:
+                    _verboseprint2(f'Didn\'t find {cpu_metrics_path}')
+                    #TODO: add list of hybrid platforms we support here
+                    if shortname in ['BDX', 'CLX', 'HSX', 'ICX', 'SKX', 'SPR', 'EMR']:
+                        raise
 
             self.archs += [
                 Model(shortname, longname, versions[shortname], models[shortname], files[shortname])
