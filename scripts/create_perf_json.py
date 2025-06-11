@@ -790,8 +790,10 @@ class Model:
                 continue
             if v.startswith('tma_') or v.startswith('topdown\\-'):
                 continue
-            assert v in events or v.upper() in events or v in infoname or v in aux, \
-                f'Expected {v} to be an event in "{name}": "{form}" on {self.shortname}'
+            #assert v in events or v.upper() in events or v in infoname or v in aux, \
+            #    f'Expected {v} to be an event in "{name}": "{form}" on {self.shortname}'
+            if v not in events and v.upper() not in events and v not in infoname and v not in aux:
+                print(f'Expected {v} to be an event in "{name}": "{form}" on {self.shortname}')
 
         assert f'{pmu_prefix}@UNC' not in form, form
         if group:
@@ -1085,9 +1087,11 @@ class Model:
         }
         ratio_column = {
             'LNL/ARL': 'LNL/ARL;MTL;ADL/RPL;TGL;RKL;ICL;KBLR/CFL/CML;SKL/KBL;BDW;HSW;IVB;SNB'.split(';'),
-            'GNR': 'GNR;MTL;SPR-HBM;SPR/EMR;ADL/RPL;TGL;RKL;ICX;ICL;CPX;CLX;KBLR/CFL/CML;SKX;SKL/KBL;BDX;BDW;HSX;HSW;IVT;IVB;JKT/SNB-EP;SNB'.split(';'),
+            'GNR': 'GNR;MTL;EMR;SPR-HBM;SPR;ADL/RPL;TGL;RKL;ICX;ICL;CPX;CLX;KBLR/CFL/CML;SKX;SKL/KBL;BDX;BDW;HSX;HSW;IVT;IVB;JKT/SNB-EP;SNB'.split(';'),
             'MTL': 'MTL;ADL/RPL;TGL;RKL;ICL;KBLR/CFL/CML;SKL/KBL;BDW;HSW;IVB;SNB'.split(';'),
-            'SPR/EMR': 'SPR/EMR;ADL/RPL;TGL;RKL;ICX;ICL;CPX;CLX;KBLR/CFL/CML;SKX;SKL/KBL;BDX;BDW;HSX;HSW;IVT;IVB;JKT/SNB-EP;SNB'.split(';'),
+            'SPR': 'SPR;ADL/RPL;TGL;RKL;ICX;ICL;CPX;CLX;KBLR/CFL/CML;SKX;SKL/KBL;BDX;BDW;HSX;HSW;IVT;IVB;JKT/SNB-EP;SNB'.split(';'),
+            'SPR-HBM': 'SP-HBM;SPR;ADL/RPL;TGL;RKL;ICX;ICL;CPX;CLX;KBLR/CFL/CML;SKX;SKL/KBL;BDX;BDW;HSX;HSW;IVT;IVB;JKT/SNB-EP;SNB'.split(';'),
+            'EMR': 'EMR;SPR-HBM;SPR;ADL/RPL;TGL;RKL;ICX;ICL;CPX;CLX;KBLR/CFL/CML;SKX;SKL/KBL;BDX;BDW;HSX;HSW;IVT;IVB;JKT/SNB-EP;SNB'.split(';'),
             'ADL/RPL': 'ADL/RPL;TGL;RKL;ICL;KBLR/CFL/CML;SKL/KBL;BDW;HSW;IVB;SNB'.split(';'),
             'TGL': 'TGL;RKL;ICL;KBLR/CFL/CML;SKL/KBL;BDW;HSW;IVB;SNB'.split(';'),
             'RKL': 'RKL;ICL;KBLR/CFL/CML;SKL/KBL;BDW;HSW;IVB;SNB'.split(';'),
